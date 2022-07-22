@@ -56,6 +56,9 @@ class PostController extends Controller
         $post->user_id = Auth::user()->id;
         $saved = $saved && $post->save();
 
+        /**
+         * Save Tags from post
+         */
         if($saved) {
             $tags = explode('#', $request->tags);
 
