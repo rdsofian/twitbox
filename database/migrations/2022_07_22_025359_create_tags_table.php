@@ -18,6 +18,7 @@ class CreateTagsTable extends Migration
             $table->unsignedBigInteger('post_id');
             $table->string('content');
             $table->timestamps();
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });
     }
 
@@ -30,4 +31,6 @@ class CreateTagsTable extends Migration
     {
         Schema::dropIfExists('tags');
     }
+
+
 }

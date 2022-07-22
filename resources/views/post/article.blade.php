@@ -10,6 +10,16 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger m-3">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            Error
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </div>
+    @endif
+
     @if ($message = Session::get('success'))
         <div class="alert alert-success alert-block m-5">
             <button type="button" class="close" data-dismiss="alert">×</button>
@@ -59,7 +69,7 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item">{{ $post->content }}</li>
                             </ul>
-                            <div class="float-left"> <a href=""> {{ count($post->comments) . " Komentar" }} </a> </div>
+                            <div class="float-left"> <a href="{{ route('post.show', $post->id) }}"> {{ count($post->comments) . " Komentar" }} </a> </div>
                             <div class="float-right">
 
                                     <form action="{{ route('post.destroy', $post->id) }}" method="post">

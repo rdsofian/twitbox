@@ -8,6 +8,7 @@ use App\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -39,6 +40,14 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|max:250'
+        ]);
+
+        if ($validator->fails()){
+            return redirect()->route('post.article')->withErrors($validator)->withInput();
+        }
+
         DB::beginTransaction();
         $saved = true;
 
@@ -48,8 +57,13 @@ class PostController extends Controller
         $saved = $saved && $post->save();
 
         if($saved) {
-            $tags = explode(',', $request->tags);
+            $tags = explode('#', $request->tags);
+
             foreach($tags as $key => $varTag) {
+                if($varTag == "") {
+                    continue;
+                }
+                $varTag =  str_replace(',', '', $varTag);
                 $tag = new Tag;
                 $tag->post_id = $post->id;
                 $tag->content = $varTag;
@@ -78,7 +92,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('post.show', compact('post'));
     }
 
     /**
@@ -116,11 +130,22 @@ class PostController extends Controller
         return redirect()->route('post.article')->with("success", "Postingan Berhasil dihapus");
     }
 
+    /**
+     * main meni of article
+     * return array data of posts table by newest
+     * GET Method
+     */
     public function article() {
         $posts = Post::orderBy('created_at', 'DESC')->get();
 
         return view('post.article', compact('posts'));
     }
+
+    /**
+     * showing reply form for commenting a post by ID
+     * sending data post by ID
+     * GET Method
+     */
 
     public function comment($id) {
         $post = Post::find($id);
@@ -128,6 +153,11 @@ class PostController extends Controller
         return view('post.comment', compact('post'));
     }
 
+
+    /**
+     * POST METHOD
+     * save a comment by Post ID
+     */
     public function postComment(Request $request) {
         $comment = new Comment();
         $comment->post_id = $request->post_id;

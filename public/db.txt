@@ -1,0 +1,29 @@
+USERS
+*id
+name
+username
+email
+photo
+password
+confirm_password
+
+POSTS
+*id
+user_id
+post
+photo
+created_at
+updated_at
+
+comments
+id
+post_id
+user_id
+comment
+created_at
+updated_at
+
+tags
+-id
+- post_id
+- tag

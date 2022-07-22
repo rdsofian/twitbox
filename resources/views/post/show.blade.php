@@ -21,6 +21,8 @@
     <div class="row justify-content-center">
         <div class="col-md-12 pb-3">
             <div class="card">
+
+                <div class="card-header">Postingan #{{$post->user->name}}</div>
                 <div class="card-body" style="background: #D9D9D9">
                     {{$post->user->name}}
                     <span class="float-right"> {{ date('d-M-Y', strtotime($post->created_at)) }}</span>
@@ -34,26 +36,17 @@
 
         <div class="col-md-12 pl-5">
             <div class="card">
-                <div class="card-header">Komentar Anda</div>
 
-                <div class="card-body">
+                @foreach ($post->comments as $comment)
+                    <div class="card-body" style="background: #D9D9D9">
+                        {{ $post->user->name }}
+                        <span class="float-right"> {{ date('d-M-Y', strtotime($comment->created_at)) }}</span>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">{{ $comment->content }}</li>
+                        </ul>
 
-                <form action="{{ route('post.post-comment') }}" method="post" class="form">
-                        @csrf
-                        <div class="form-group">
-                            <label for="">Komentar</label>
-                            <input type="hidden" name="post_id" value="{{$post->id}}">
-                            <textarea name="content" cols="30" rows="3" class="form-control"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="">Tags</label>
-                            <input type="text" name="tags" class="form-control"> Pisahkan Tag oleh Koma
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" value="Komentari" class="btn btn-success float-right">
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                @endforeach
             </div>
 
         </div>
