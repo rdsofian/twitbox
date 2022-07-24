@@ -106,7 +106,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('post.edit', compact('post'));
     }
 
     /**
@@ -118,7 +118,28 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|max:250'
+        ]);
 
+        if ($validator->fails()){
+            return redirect()->route('post.article')->withErrors($validator)->withInput();
+        }
+
+        DB::beginTransaction();
+        $saved = true;
+
+        $post->content = $request->content;
+        $saved = $saved && $post->save();
+
+
+        if($saved) {
+            DB::commit();
+            return redirect()->route('post.article')->with("success", "Postingan Telah Diubah");
+        }else{
+            DB::rollBack();
+            return redirect()->route('post.article')->with("error", "Gagal Mengubah Postingan");
+        }
     }
 
     /**
@@ -162,6 +183,14 @@ class PostController extends Controller
      * save a comment by Post ID
      */
     public function postComment(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|max:250'
+        ]);
+
+        if ($validator->fails()){
+            return redirect()->route('post.article')->withErrors($validator)->withInput();
+        }
+
         $comment = new Comment();
         $comment->post_id = $request->post_id;
         $comment->content = $request->content;

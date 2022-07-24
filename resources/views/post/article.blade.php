@@ -67,10 +67,17 @@
                             {{ $post->user->name }}
                             <span class="float-right"> {{ date('d-M-Y', strtotime($post->created_at)) }}</span>
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item">{{ $post->content }}</li>
+                                <li class="list-group-item">
+                                    {{ $post->content }}
+                                </li>
+                                @if (Auth::user()->id == $post->user_id)
+                                    <li class="list-group-item">
+                                        <a href="{{ route('post.edit', $post->id) }}" class="float-right"> Edit </a>
+                                    </li>
+                                @endif
                             </ul>
-                            <div class="float-left"> <a href="{{ route('post.show', $post->id) }}"> {{ count($post->comments) . " Komentar" }} </a> </div>
-                            <div class="float-right">
+                            <div class="float-left pt-2"> <a href="{{ route('post.show', $post->id) }}"> {{ count($post->comments) . " Komentar" }} </a> </div>
+                            <div class="float-right pt-2">
 
                                     <form action="{{ route('post.destroy', $post->id) }}" method="post">
                                         @csrf

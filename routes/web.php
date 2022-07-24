@@ -22,3 +22,4 @@ Route::get('/post/article', 'PostController@article')->name('post.article');
 Route::get('/post/comment/{id}', 'PostController@comment')->name('post.comment');
 Route::post('/post/post-comment/', 'PostController@postComment')->name('post.post-comment');
 Route::resource('/post' , 'PostController');
+Route::resource('/comment', 'CommentController');

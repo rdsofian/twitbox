@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CommentController extends Controller
 {
@@ -57,7 +58,7 @@ class CommentController extends Controller
      */
     public function edit(Comment $comment)
     {
-        //
+        return view('comment.edit', compact('comment'));
     }
 
     /**
@@ -69,7 +70,17 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'content' => 'required|max:250'
+        ]);
+
+        if ($validator->fails()){
+            return redirect()->route('post.article')->withErrors($validator)->withInput();
+        }
+
+        $comment->content = $request->content;
+        $comment->save();
+        return redirect()->route('post.article')->with("success", "Komentar Berhasil ditambahkan");
     }
 
     /**
