@@ -4,14 +4,14 @@
 <div class="container">
 
     @if ($message = Session::get('error'))
-        <div class="alert alert-danger alert-block m-5">
+        <div class="alert alert-danger alert-block my-3">
             <button type="button" class="close" data-dismiss="alert">×</button>
             <strong>{{ $message }}</strong>
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="alert alert-danger m-3">
+        <div class="alert alert-danger my-3">
             <button type="button" class="close" data-dismiss="alert">×</button>
             Error
             @foreach ($errors->all() as $error)
@@ -21,7 +21,7 @@
     @endif
 
     @if ($message = Session::get('success'))
-        <div class="alert alert-success alert-block m-5">
+        <div class="alert alert-success alert-block my-3">
             <button type="button" class="close" data-dismiss="alert">×</button>
             <strong>{{ $message }}</strong>
         </div>
@@ -65,10 +65,23 @@
                     @foreach ($posts as $post)
                         <div class="card-body" style="background: #D9D9D9">
                             {{ $post->user->name }}
-                            <span class="float-right"> {{ date('d-M-Y', strtotime($post->created_at)) }}</span>
-                            <ul class="list-group list-group-flush">
+                            @php
+                                \Carbon\Carbon::setLocale('id');
+                            @endphp
+                            <span class="float-right">
+                                {{
+                                    $post->created_at->diffForHumans()
+                                }}
+                            </span>
+                            <ul class="list-group list-group-flush py-3">
                                 <li class="list-group-item">
-                                    {{ $post->content }}
+                                    <div class="col-md-2 float-left">
+                                        test
+                                    </div>
+                                    <div class="col-md-10 float-right">
+
+                                        {{ $post->content }}
+                                    </div>
                                 </li>
                                 @if (Auth::user()->id == $post->user_id)
                                     <li class="list-group-item">
@@ -76,8 +89,8 @@
                                     </li>
                                 @endif
                             </ul>
-                            <div class="float-left pt-2"> <a href="{{ route('post.show', $post->id) }}"> {{ count($post->comments) . " Komentar" }} </a> </div>
-                            <div class="float-right pt-2">
+                            <div class="float-left"> <a href="{{ route('post.show', $post->id) }}"> {{ count($post->comments) . " Komentar" }} </a> </div>
+                            <div class="float-right">
 
                                     <form action="{{ route('post.destroy', $post->id) }}" method="post">
                                         @csrf
